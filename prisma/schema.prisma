@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  vendor
+  customer
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  role      Role
+  password  String
+  Vendor    Vendor?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order[]
+}
+
+model Vendor {
+  id         Int          @id @default(autoincrement())
+  User       User         @relation(fields: [userId], references: [id])
+  userId     Int          @unique
+  address    String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Restaurant Restaurant[]
+}
+
+model Restaurant {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  Vendor    Vendor     @relation(fields: [vendorId], references: [id])
+  vendorId  Int        @unique
+  address   String
+  phone     String
+  email     String
+  website   String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Category  Category[]
+  addons    Addon[]
+  Order     Order[]
+  Table     Table[]
+}
+
+model Category {
+  id           Int        @id @default(autoincrement())
+  name         String     @unique
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId Int        @unique
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  MenuItem     MenuItem[]
+}
+
+model MenuItem {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  Category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId  Int         @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  OrderItem   OrderItem[]
+}
+
+model Addon {
+  id           Int        @id @default(autoincrement())
+  name         String
+  price        Float
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId Int        @unique
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  OrderItem    OrderItem? @relation(fields: [orderItemId], references: [id])
+  orderItemId  Int?
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  User         User        @relation(fields: [userId], references: [id])
+  userId       Int
+  Restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
+  restaurantId Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  OrderItem    OrderItem[]
+  Payment      Payment?
+  paymentId    Int?        @unique
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  MenuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  menuItemId Int
+  Order      Order    @relation(fields: [orderId], references: [id])
+  orderId    Int
+  quantity   Int
+  addons     Addon[]
+  price      Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Table {
+  id           Int        @id @default(autoincrement())
+  name         String
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  amount    Float
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int      @unique
+}
+
+enum NotificationType {
+  order
+  payment
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  message   String
+  type      NotificationType
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}

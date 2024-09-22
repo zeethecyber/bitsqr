@@ -9,9 +9,6 @@ export class CreateAuthDto {
   email: string;
 
   @IsString()
-  password: string;
-
-  @IsString()
   @IsIn(['admin', 'vendor', 'customer'])
   role: Role;
 

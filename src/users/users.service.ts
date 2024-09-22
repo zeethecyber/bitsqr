@@ -1,30 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly database: DatabaseService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    try {
-      const password = bcrypt.hashSync(createUserDto.password, 10);
-      const user = await this.database.user.create({
-        data: {
-          ...createUserDto,
-          password: password,
-        },
-      });
-      return user;
-    } catch (error) {
-      return error;
-    }
-  }
-
   async findAll() {
-    const users = await this.database.user.findMany();
+    const users = await this.database.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
     if (!users.length) {
       return 'No users found';
     }
@@ -42,33 +33,33 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    let password: string;
-    if (updateUserDto.password)
-      password = bcrypt.hashSync(String(updateUserDto.password), 10);
     const user = await this.database.user.update({
       where: { id },
       data: {
-        ...updateUserDto,
-        password: password,
+        name: updateUserDto.name,
+        email: updateUserDto.email,
+        role: updateUserDto.role,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
       },
     });
-    if (!user) {
-      return 'User not found';
-    }
     return user;
   }
 
   async remove(id: number) {
-    try {
-      const user = await this.database.user.delete({
-        where: { id },
-      });
-      if (!user) {
-        return 'User not found';
-      }
-      return user;
-    } catch (error) {
-      return error;
+    const user = await this.database.user.delete({
+      where: { id },
+    });
+    if (!user) {
+      return 'User not found';
     }
+    return {
+      message: 'User deleted successfully',
+    };
   }
 }

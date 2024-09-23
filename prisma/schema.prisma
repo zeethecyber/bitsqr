@@ -87,7 +87,7 @@ model Addon {
   name         String
   price        Float
   Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  restaurantId Int        @unique
+  restaurantId Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   OrderItem    OrderItem? @relation(fields: [orderItemId], references: [id])

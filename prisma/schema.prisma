@@ -67,16 +67,16 @@ model Category {
   restaurantId Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  MenuItem     MenuItem[]
+  Product      Product[]
 }
 
-model MenuItem {
+model Product {
   id          Int         @id @default(autoincrement())
   name        String
   description String
   price       Float
   Category    Category    @relation(fields: [categoryId], references: [id])
-  categoryId  Int         @unique
+  categoryId  Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   OrderItem   OrderItem[]
@@ -108,16 +108,16 @@ model Order {
 }
 
 model OrderItem {
-  id         Int      @id @default(autoincrement())
-  MenuItem   MenuItem @relation(fields: [menuItemId], references: [id])
-  menuItemId Int
-  Order      Order    @relation(fields: [orderId], references: [id])
-  orderId    Int
-  quantity   Int
-  addons     Addon[]
-  price      Float
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  Product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  Order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int
+  quantity  Int
+  addons    Addon[]
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Table {

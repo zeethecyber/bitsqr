@@ -7,9 +7,17 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
-  imports: [UsersModule, DatabaseModule, AuthModule, CategoriesModule, RestaurantsModule],
+  imports: [
+    UsersModule,
+    DatabaseModule,
+    AuthModule,
+    CategoriesModule,
+    RestaurantsModule,
+    ProductsModule,
+  ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
 })

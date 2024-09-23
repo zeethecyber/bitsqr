@@ -43,20 +43,21 @@ model Vendor {
 }
 
 model Restaurant {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  Vendor    Vendor     @relation(fields: [vendorId], references: [id])
-  vendorId  Int        @unique
-  address   String
-  phone     String
-  email     String
-  website   String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Category  Category[]
-  addons    Addon[]
-  Order     Order[]
-  Table     Table[]
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String?
+  Vendor      Vendor     @relation(fields: [vendorId], references: [id])
+  vendorId    Int
+  address     String
+  phone       String
+  email       String     @unique
+  website     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Category    Category[]
+  Addon       Addon[]
+  Order       Order[]
+  Table       Table[]
 }
 
 model Category {

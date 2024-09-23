@@ -9,6 +9,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { ProductsModule } from './products/products.module';
 import { AddonsModule } from './addons/addons.module';
+import { TablesModule } from './tables/tables.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AddonsModule } from './addons/addons.module';
     RestaurantsModule,
     ProductsModule,
     AddonsModule,
+    TablesModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseService],
